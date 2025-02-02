@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BOT - BUSCA_TELS</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Bot BuscaTels</h1>
+    <form id="bot-form" action="/run_bot" method="post">
+        <button id="executar-bot" type="submit">Executar Bot</button>
+    </form>
+    <div id="status"></div>
+
+    <script>
+        $(document).ready(function(){
+            $('#bot-form').submit(function(e){
+                e.preventDefault();
+                $.post('/run_bot', function(data){
+                    $('#status').text('Bot em execução...');
+                    pollStatus();
+                });
+            });
+        });
+
+        function pollStatus() {
+            setTimeout(function(){
+                $.get('/bot_status', function(data){
+                    $('#status').text(data.status);
+                    if (data.status !== 'Concluído') {
+                        pollStatus();
+                    }
+                });
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
